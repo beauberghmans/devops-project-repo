@@ -1,0 +1,32 @@
+---
+- name: Stop and remove all Docker containers
+  hosts: librenms-server
+  become: true
+  tasks:
+    - name: Get list of all running container IDs
+      command: /usr/bin/docker ps -q  # Replace with the correct path to docker
+      register: running_containers
+      changed_when: false
+      tags: docker
+
+    - name: Stop all running containers
+      docker_container:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ running_containers.stdout.splitlines() }}"
+      ignore_errors: true
+      tags: docker
+
+    - name: Get list of all containers (including stopped)
+      command: /usr/bin/docker ps -a -q  # Replace with the correct path to docker
+      register: all_containers
+      changed_when: false
+      tags: docker
+
+    - name: Remove all stopped containers
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ all_containers.stdout.splitlines() }}"
+      ignore_errors: true
+      tags: docker
