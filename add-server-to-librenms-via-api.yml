@@ -30,7 +30,7 @@
         url: "http://10.10.10.131/api/v0/devices/10.10.10.130"
         method: GET
         headers:
-          X-Auth-Token: "e72641335829c7b5befeb6f5c10d9dc9"
+          X-Auth-Token: "YOUR_API_KEY_HERE"       # ADD YOUR API KEY HERE
         status_code: 200
       register: device_check
       failed_when: device_check.status != 200 and device_check.status != 404
